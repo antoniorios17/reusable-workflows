@@ -1,12 +1,10 @@
 name: Create AWS Profiles
 description: Create AWS deployment profile to assume roles inside Dev account and Prod account
-author: ${{ github.actor }}
 
-inputs: 
+inputs:
   target-account:
     description: 'Target account to create deployment profile for. Valid values are: dev, prod'
     required: true
-
 
 runs:
   using: composite
@@ -17,6 +15,7 @@ runs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     - name: test credentials
+      shell: bash
       run: aws sts get-caller-identity
 
 
