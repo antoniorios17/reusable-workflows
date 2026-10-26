@@ -5,6 +5,9 @@ inputs:
   target-account:
     description: 'Target account to create deployment profile for. Valid values are: Dev, prod'
     required: true
+  role-to-assume:
+    description: 'role to assume'
+    default: 'DeploymentRole'
 
 
 runs:
@@ -19,9 +22,12 @@ runs:
         role-to-assume: arn:aws:iam::434057724837:role/terraform
         max-attempts: 3
 
-    - name: Test
+    - name: Setup Deploy AWS Profile
       shell: bash
       run: |
-        echo "${{ inputs.target-account }}"
-        aws sts get-caller-identity
+        aws configure set region ${{ env.AWS_REGION }} --profile Deploy
+        aws configure set aws_access_key_id ${{ env.AWS_ACCESS_KEY_ID }} --profile Deploy
+        aws configure set aws_secret_access_key ${{ env.AWS_SECRET_ACCESS_KEY }} --profile Deploy
+        aws configure set aws_session_token ${{ env.AWS_SESSION_TOKEN }} --profile Deploy
+
 
