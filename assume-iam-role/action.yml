@@ -39,6 +39,7 @@ runs:
             echo "aws-account-id=263453990713" >> $GITHUB_OUTPUT
             echo "aws-region=us-east-1" >> $GITHUB_OUTPUT
             ;;
+        esac
     - name: Assume role in Target Environment
       if: ${{ inputs.aws-env != 'Deployment'|| fromJSON(inputs.assume-on-deployment) }}
       id: assume-role-on-deployment
