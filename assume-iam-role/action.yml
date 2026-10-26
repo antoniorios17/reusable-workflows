@@ -2,6 +2,10 @@ name: Assume IAM Role
 description: Assume IAM role in target account and set AWS credentials in environment variables
 
 inputs:
+  aws-env:
+    description: 'AWS Env or Account where the role to assume exist'
+    required: true
+    default: 'Development'
   assume-on-deployment:
       description: 'Whether to assume role even if the target env is Deployment (same account).'
       default: "false"
