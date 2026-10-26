@@ -1,0 +1,54 @@
+name: Assume IAM Role
+description: Assume IAM role in target account and set AWS credentials in environment variables
+
+inputs:
+  assume-on-deployment:
+      description: 'Whether to assume role even if the target env is Deployment (same account).'
+      default: "false"
+  role-to-assume:
+      description: 'Role to assume in the target account'
+      default: 'DeploymentRole'
+  assume-session_name:
+    description: 'Assume role session name'
+    default: ${{ github.workflow }}-${{ github.run_id }}-${{ github.run_attempt }}
+  unset-current-credentials:
+    description: 'When set, attempts to unset any existing credentials in your action runner.'
+    default: "false"
+
+outputs:
+  aws-region:
+    description: 'AWS region of the target account'
+    value: ${{ steps.set-aws-account.outputs.aws-region }}
+  role-to-assume:
+    description: 'Role to assume in the target account'
+    value: ${{ inputs.role-to-assume }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set aws account
+      id: set-aws-account
+      shell: bash
+      run: |
+        case "${{ inputs.aws-env }}" in:
+          "Deployment")
+            echo "aws-account-id=434057724837" >> $GITHUB_OUTPUT
+            echo "aws-region=us-east-1" >> $GITHUB_OUTPUT
+            ;;
+          "Development")
+            echo "aws-account-id=263453990713" >> $GITHUB_OUTPUT
+            echo "aws-region=us-east-1" >> $GITHUB_OUTPUT
+            ;;
+    - name: Assume role in Target Environment
+      if: ${{ inputs.aws-env != 'Deployment'|| fromJSON(inputs.assume-on-deployment) }}
+      id: assume-role-on-deployment
+      uses: aws-actions/configure-aws-credentials@v5
+      with:
+        aws-region: ${{steps.set-aws-account.outputs.aws-region}}
+        role-to-assume: arn:aws:iam::${{steps.set-aws-account.outputs.aws-account-id}}:role/${{ inputs.role-to-assume }}
+        role-chaining: true
+        retry-attempts: 3
+        role-session-name: ${{ inputs.assume-session-name }}
+        unset-current-credentials: ${{ inputs.unset-current-credentials }}
+
+
