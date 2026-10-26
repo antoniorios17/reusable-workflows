@@ -6,12 +6,15 @@ inputs:
     description: 'Target account to create deployment profile for. Valid values are: Dev, prod'
     required: true
 
+
 runs:
   using: "composite"
+
   steps:
     - name: Get current AWS cred
       uses: aws-actions/configure-aws-credentials@v5
       with:
+        id-token: write
         role-skip-session-tagging: true
         role-to-assume: arn:aws:iam::434057724837:role/terraform
         max-attempts: 3
