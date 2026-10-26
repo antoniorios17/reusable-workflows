@@ -22,5 +22,6 @@ runs:
     - name: Test
       shell: bash
       run: |
+        echo "${{ inputs.target-account }}"
         aws sts get-caller-identity
 
