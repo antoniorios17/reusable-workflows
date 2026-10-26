@@ -3,7 +3,7 @@ description: Create AWS deployment profile to assume roles inside Dev account an
 
 inputs:
   target-account:
-    description: 'Target account to create deployment profile for. Valid values are: dev, prod'
+    description: 'Target account to create deployment profile for. Valid values are: Dev, prod'
     required: true
 
 runs:
